@@ -1,25 +1,18 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System;
-
-public class Player : MonoBehaviour
+using System.Collections;public class Player : MonoBehaviour
 {
 	[SerializeField] private Rigidbody _rigidbody;
+	[SerializeField] private AudioSource audioSource;
 	private Vector2 moveDirection;
-	private bool isAbleToMove = false;
-
-	[SerializeField] private UIController uIController;
-
+	private bool isAbleToMove = true;
 
 	void Start()
     {
 		_rigidbody.Sleep();
 	}
 
-    public void Launch()
-    {
-		isAbleToMove = true;
-	}
+   
 	void FixedUpdate()
     {
 		if (isAbleToMove)
@@ -35,13 +28,22 @@ public class Player : MonoBehaviour
 			), ForceMode.Acceleration);
 		}
 	}
-    void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("PlayerKiller"))
-        {
+	void OnCollisionEnter(Collision collision)
+	{
+		if (collision.gameObject.CompareTag("PlayerKiller"))
+		{
 			isAbleToMove = false;
 			_rigidbody.Sleep();
-			uIController.PlayerDying();
+			StartCoroutine(PlayerDied());
 		}
-    }
+	}
+	private IEnumerator PlayerDied()
+	{
+			for (float i = 1; i > 0; i -= 0.01f)
+			{
+				audioSource.pitch = i;
+				yield return new WaitForSecondsRealtime(0.02f);
+			}
+			SceneManager.LoadSceneAsync("Start");
+	}
 }
