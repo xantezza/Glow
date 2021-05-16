@@ -8,6 +8,8 @@ public class Player : MonoBehaviour
 	private Vector2 moveDirection;
 	private bool isAbleToMove = false;
 
+	[SerializeField] private UIController uIController;
+
 
 	void Start()
     {
@@ -23,23 +25,23 @@ public class Player : MonoBehaviour
 		if (isAbleToMove)
 		{
 			moveDirection = new Vector2(Screen.width / 2, Screen.height / 2) - new Vector2(Input.mousePosition.x, Input.mousePosition.y);
-			moveDirection *= 0.0002f;
+			moveDirection *= 0.008f;
 
 			_rigidbody.AddForce(new Vector3
 			(
 				-moveDirection.y,
 				0,
 				moveDirection.x
-			), ForceMode.Impulse);
+			), ForceMode.Acceleration);
 		}
 	}
-
-
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("PlayerKiller"))
         {
-			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+			isAbleToMove = false;
+			_rigidbody.Sleep();
+			uIController.PlayerDying();
 		}
     }
 }

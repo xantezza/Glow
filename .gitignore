@@ -12,7 +12,8 @@ ExportedOBj/
 *.svd
 *.pdb
 Builds/
-
+Library/
+Temp/
 *.pidb.meta
 *.meta
 
